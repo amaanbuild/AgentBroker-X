@@ -17,5 +17,6 @@ COPY . .
 ENV PORT=8000
 EXPOSE 8000
 
-# Run migrations (best-effort) then boot the API.
-CMD ["sh", "-c", "alembic upgrade head || true; uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+# Boot the API. The app creates its schema on startup (init_db), so no
+# blocking migration step is needed before the server binds the port.
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]

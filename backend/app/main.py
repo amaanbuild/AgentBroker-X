@@ -40,9 +40,13 @@ settle → reputation`.
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables on boot. On Railway with Postgres this is a no-op once
-    # Alembic has run; on SQLite it bootstraps the schema for the demo.
-    init_db()
+    # Create tables on boot. Never block startup on the database: /health must
+    # respond so the platform marks the service live even if the DB is briefly
+    # unreachable. Schema is retried inside init_db().
+    try:
+        init_db()
+    except Exception as exc:  # noqa: BLE001
+        print(f"[startup] database not ready, continuing without init: {exc}")
     yield
 
 
