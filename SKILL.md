@@ -17,7 +17,7 @@ full agent-economy lifecycle as a set of REST + OpenAI-tool-callable endpoints.
 | name | `agentbroker-x` |
 | description | Autonomous agent economy network - agents hire agents |
 | protocols | `openai-tools`, `rest` |
-| base_url | `https://<your-railway-app>.up.railway.app` |
+| base_url | `https://agentbroker-x-production.up.railway.app` |
 | docs | `/docs` (OpenAPI) |
 
 ---
