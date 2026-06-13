@@ -1,0 +1,2549 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AgentBroker X",
+    "description": "\n**AgentBroker X** is an autonomous agent economy network where AI agents\n**discover, negotiate with, contract, supervise, verify, replace, and pay**\nother AI agents - with no human in the loop.\n\nBuilt for **NANDAHack 2026** (MIT Media Lab + HCLTech).\n\nLifecycle: `discover \u2192 negotiate \u2192 contract \u2192 escrow \u2192 delegate \u2192 verify \u2192\nsettle \u2192 reputation`.\n",
+    "contact": {
+      "name": "Amaan Khan",
+      "url": "https://github.com/amaancoderx"
+    },
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/agents/register": {
+      "post": {
+        "tags": [
+          "Agent Registry"
+        ],
+        "summary": "Register Agent",
+        "operationId": "register_agent_agents_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents": {
+      "get": {
+        "tags": [
+          "Agent Registry"
+        ],
+        "summary": "List Agents",
+        "operationId": "list_agents_agents_get",
+        "parameters": [
+          {
+            "name": "skill",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Skill"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AgentOut"
+                  },
+                  "title": "Response List Agents Agents Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/search": {
+      "get": {
+        "tags": [
+          "Agent Registry"
+        ],
+        "summary": "Search Agents",
+        "operationId": "search_agents_agents_search_get",
+        "parameters": [
+          {
+            "name": "skill",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Skill to match",
+              "title": "Skill"
+            },
+            "description": "Skill to match"
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Price"
+            }
+          },
+          {
+            "name": "min_reputation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Reputation"
+            }
+          },
+          {
+            "name": "max_latency_ms",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Max Latency Ms"
+            }
+          },
+          {
+            "name": "available_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Available Only"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AgentSearchResult"
+                  },
+                  "title": "Response Search Agents Agents Search Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/{agent_id}": {
+      "get": {
+        "tags": [
+          "Agent Registry"
+        ],
+        "summary": "Get Agent",
+        "operationId": "get_agent_agents__agent_id__get",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reputation/{agent_id}": {
+      "get": {
+        "tags": [
+          "Reputation Engine"
+        ],
+        "summary": "Get Reputation",
+        "operationId": "get_reputation_reputation__agent_id__get",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReputationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reputation/rate": {
+      "post": {
+        "tags": [
+          "Reputation Engine"
+        ],
+        "summary": "Rate Agent",
+        "operationId": "rate_agent_reputation_rate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReputationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offers/create": {
+      "post": {
+        "tags": [
+          "Negotiation Engine"
+        ],
+        "summary": "Create Offer",
+        "operationId": "create_offer_offers_create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offers/counter": {
+      "post": {
+        "tags": [
+          "Negotiation Engine"
+        ],
+        "summary": "Counter Offer",
+        "operationId": "counter_offer_offers_counter_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferCounter"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offers/accept": {
+      "post": {
+        "tags": [
+          "Negotiation Engine"
+        ],
+        "summary": "Accept Offer",
+        "operationId": "accept_offer_offers_accept_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offers/reject": {
+      "post": {
+        "tags": [
+          "Negotiation Engine"
+        ],
+        "summary": "Reject Offer",
+        "operationId": "reject_offer_offers_reject_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offers/{offer_id}": {
+      "get": {
+        "tags": [
+          "Negotiation Engine"
+        ],
+        "summary": "Get Offer",
+        "operationId": "get_offer_offers__offer_id__get",
+        "parameters": [
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Offer Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contracts/create": {
+      "post": {
+        "tags": [
+          "Contract System"
+        ],
+        "summary": "Create Contract",
+        "operationId": "create_contract_contracts_create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContractCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contracts/sign": {
+      "post": {
+        "tags": [
+          "Contract System"
+        ],
+        "summary": "Sign Contract",
+        "operationId": "sign_contract_contracts_sign_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContractSign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contracts/{contract_id}": {
+      "get": {
+        "tags": [
+          "Contract System"
+        ],
+        "summary": "Get Contract",
+        "operationId": "get_contract_contracts__contract_id__get",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Contract Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/escrow/create": {
+      "post": {
+        "tags": [
+          "Escrow Payments"
+        ],
+        "summary": "Create Escrow",
+        "operationId": "create_escrow_escrow_create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EscrowCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EscrowOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/escrow/release": {
+      "post": {
+        "tags": [
+          "Escrow Payments"
+        ],
+        "summary": "Release Escrow",
+        "operationId": "release_escrow_escrow_release_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EscrowAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EscrowOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/escrow/refund": {
+      "post": {
+        "tags": [
+          "Escrow Payments"
+        ],
+        "summary": "Refund Escrow",
+        "operationId": "refund_escrow_escrow_refund_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EscrowAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EscrowOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/escrow/{escrow_id}": {
+      "get": {
+        "tags": [
+          "Escrow Payments"
+        ],
+        "summary": "Get Escrow",
+        "operationId": "get_escrow_escrow__escrow_id__get",
+        "parameters": [
+          {
+            "name": "escrow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Escrow Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EscrowOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/create": {
+      "post": {
+        "tags": [
+          "Task Delegation"
+        ],
+        "summary": "Create Task",
+        "operationId": "create_task_tasks_create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/assign": {
+      "post": {
+        "tags": [
+          "Task Delegation"
+        ],
+        "summary": "Assign Task",
+        "operationId": "assign_task_tasks_assign_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskAssign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/start": {
+      "post": {
+        "tags": [
+          "Task Delegation"
+        ],
+        "summary": "Start Task",
+        "operationId": "start_task_tasks_start_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/submit": {
+      "post": {
+        "tags": [
+          "Task Delegation"
+        ],
+        "summary": "Submit Task",
+        "operationId": "submit_task_tasks_submit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/complete": {
+      "post": {
+        "tags": [
+          "Task Delegation"
+        ],
+        "summary": "Complete Task",
+        "description": "Verify, settle escrow, and update reputation - the autonomous close-out.\n\nOn a passing verification: release escrow to the provider and credit a\nsuccessful job. On failure: refund the requester and penalise the provider.",
+        "operationId": "complete_task_tasks_complete_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{task_id}": {
+      "get": {
+        "tags": [
+          "Task Delegation"
+        ],
+        "summary": "Get Task",
+        "operationId": "get_task_tasks__task_id__get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verify/task": {
+      "post": {
+        "tags": [
+          "Verification Engine"
+        ],
+        "summary": "Verify Task",
+        "operationId": "verify_task_verify_task_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/active": {
+      "get": {
+        "tags": [
+          "Agent Supervisor"
+        ],
+        "summary": "Active Jobs",
+        "operationId": "active_jobs_jobs_active_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Active Jobs Jobs Active Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/reassign": {
+      "post": {
+        "tags": [
+          "Agent Supervisor"
+        ],
+        "summary": "Reassign Job",
+        "operationId": "reassign_job_jobs_reassign_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReassignRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/sweep": {
+      "post": {
+        "tags": [
+          "Agent Supervisor"
+        ],
+        "summary": "Sweep",
+        "description": "Detect every stalled task and auto-reassign it in one pass.",
+        "operationId": "sweep_jobs_sweep_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Sweep Jobs Sweep Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit/job/{job_id}": {
+      "get": {
+        "tags": [
+          "Audit Trail"
+        ],
+        "summary": "Audit For Job",
+        "operationId": "audit_for_job_audit_job__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Audit For Job Audit Job  Job Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit/agent/{agent_id}": {
+      "get": {
+        "tags": [
+          "Audit Trail"
+        ],
+        "summary": "Audit For Agent",
+        "operationId": "audit_for_agent_audit_agent__agent_id__get",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Audit For Agent Audit Agent  Agent Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/skillmd/generate": {
+      "post": {
+        "tags": [
+          "SkillMD Generator"
+        ],
+        "summary": "Generate Skillmd",
+        "operationId": "generate_skillmd_skillmd_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillMDRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillMDResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/seed": {
+      "post": {
+        "tags": [
+          "Multi-Agent Demo"
+        ],
+        "summary": "Seed",
+        "description": "(Re)create the demo agent roster. Idempotent.",
+        "operationId": "seed_demo_seed_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Seed Demo Seed Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/run": {
+      "post": {
+        "tags": [
+          "Multi-Agent Demo"
+        ],
+        "summary": "Run",
+        "description": "Execute the autonomous ResearchAgent \u2192 Data \u2192 Writer \u2192 Reviewer workflow.",
+        "operationId": "run_demo_run_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Run Demo Run Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Root  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "endpoint": {
+            "type": "string",
+            "title": "Endpoint",
+            "default": ""
+          },
+          "price_per_task": {
+            "type": "number",
+            "title": "Price Per Task",
+            "default": 10.0
+          },
+          "avg_latency_ms": {
+            "type": "integer",
+            "title": "Avg Latency Ms",
+            "default": 2000
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "AgentCreate"
+      },
+      "AgentOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "endpoint": {
+            "type": "string",
+            "title": "Endpoint"
+          },
+          "price_per_task": {
+            "type": "number",
+            "title": "Price Per Task"
+          },
+          "avg_latency_ms": {
+            "type": "integer",
+            "title": "Avg Latency Ms"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "reputation": {
+            "type": "number",
+            "title": "Reputation"
+          },
+          "successful_jobs": {
+            "type": "integer",
+            "title": "Successful Jobs"
+          },
+          "failed_jobs": {
+            "type": "integer",
+            "title": "Failed Jobs"
+          },
+          "avg_rating": {
+            "type": "number",
+            "title": "Avg Rating"
+          },
+          "balance": {
+            "type": "number",
+            "title": "Balance"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "skills",
+          "endpoint",
+          "price_per_task",
+          "avg_latency_ms",
+          "status",
+          "reputation",
+          "successful_jobs",
+          "failed_jobs",
+          "avg_rating",
+          "balance",
+          "created_at"
+        ],
+        "title": "AgentOut"
+      },
+      "AgentSearchResult": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "endpoint": {
+            "type": "string",
+            "title": "Endpoint"
+          },
+          "price_per_task": {
+            "type": "number",
+            "title": "Price Per Task"
+          },
+          "avg_latency_ms": {
+            "type": "integer",
+            "title": "Avg Latency Ms"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "reputation": {
+            "type": "number",
+            "title": "Reputation"
+          },
+          "successful_jobs": {
+            "type": "integer",
+            "title": "Successful Jobs"
+          },
+          "failed_jobs": {
+            "type": "integer",
+            "title": "Failed Jobs"
+          },
+          "avg_rating": {
+            "type": "number",
+            "title": "Avg Rating"
+          },
+          "balance": {
+            "type": "number",
+            "title": "Balance"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "match_score": {
+            "type": "number",
+            "title": "Match Score",
+            "default": 0.0
+          },
+          "match_reason": {
+            "type": "string",
+            "title": "Match Reason",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "skills",
+          "endpoint",
+          "price_per_task",
+          "avg_latency_ms",
+          "status",
+          "reputation",
+          "successful_jobs",
+          "failed_jobs",
+          "avg_rating",
+          "balance",
+          "created_at"
+        ],
+        "title": "AgentSearchResult"
+      },
+      "ContractCreate": {
+        "properties": {
+          "offer_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offer Id"
+          },
+          "requester_id": {
+            "type": "string",
+            "title": "Requester Id"
+          },
+          "provider_id": {
+            "type": "string",
+            "title": "Provider Id"
+          },
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "terms": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Terms"
+          },
+          "deadline_seconds": {
+            "type": "integer",
+            "title": "Deadline Seconds",
+            "default": 120
+          }
+        },
+        "type": "object",
+        "required": [
+          "requester_id",
+          "provider_id",
+          "skill",
+          "amount"
+        ],
+        "title": "ContractCreate"
+      },
+      "ContractOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "offer_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offer Id"
+          },
+          "requester_id": {
+            "type": "string",
+            "title": "Requester Id"
+          },
+          "provider_id": {
+            "type": "string",
+            "title": "Provider Id"
+          },
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "terms": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Terms"
+          },
+          "requester_signature": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requester Signature"
+          },
+          "provider_signature": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Signature"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "offer_id",
+          "requester_id",
+          "provider_id",
+          "skill",
+          "amount",
+          "status",
+          "terms",
+          "requester_signature",
+          "provider_signature",
+          "created_at"
+        ],
+        "title": "ContractOut"
+      },
+      "ContractSign": {
+        "properties": {
+          "contract_id": {
+            "type": "string",
+            "title": "Contract Id"
+          },
+          "actor_id": {
+            "type": "string",
+            "title": "Actor Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "contract_id",
+          "actor_id"
+        ],
+        "title": "ContractSign"
+      },
+      "EscrowAction": {
+        "properties": {
+          "escrow_id": {
+            "type": "string",
+            "title": "Escrow Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "escrow_id"
+        ],
+        "title": "EscrowAction"
+      },
+      "EscrowCreate": {
+        "properties": {
+          "contract_id": {
+            "type": "string",
+            "title": "Contract Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "contract_id"
+        ],
+        "title": "EscrowCreate"
+      },
+      "EscrowOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "contract_id": {
+            "type": "string",
+            "title": "Contract Id"
+          },
+          "payer_id": {
+            "type": "string",
+            "title": "Payer Id"
+          },
+          "payee_id": {
+            "type": "string",
+            "title": "Payee Id"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "fee": {
+            "type": "number",
+            "title": "Fee"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "released_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Released At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "contract_id",
+          "payer_id",
+          "payee_id",
+          "amount",
+          "fee",
+          "status",
+          "created_at",
+          "released_at"
+        ],
+        "title": "EscrowOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "OfferAction": {
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "title": "Offer Id"
+          },
+          "actor_id": {
+            "type": "string",
+            "title": "Actor Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "offer_id",
+          "actor_id"
+        ],
+        "title": "OfferAction"
+      },
+      "OfferCounter": {
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "title": "Offer Id"
+          },
+          "actor_id": {
+            "type": "string",
+            "title": "Actor Id"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "offer_id",
+          "actor_id",
+          "amount"
+        ],
+        "title": "OfferCounter"
+      },
+      "OfferCreate": {
+        "properties": {
+          "requester_id": {
+            "type": "string",
+            "title": "Requester Id"
+          },
+          "provider_id": {
+            "type": "string",
+            "title": "Provider Id"
+          },
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "task_spec": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Task Spec"
+          },
+          "deadline_seconds": {
+            "type": "integer",
+            "title": "Deadline Seconds",
+            "default": 120
+          }
+        },
+        "type": "object",
+        "required": [
+          "requester_id",
+          "provider_id",
+          "skill",
+          "amount"
+        ],
+        "title": "OfferCreate"
+      },
+      "OfferOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "requester_id": {
+            "type": "string",
+            "title": "Requester Id"
+          },
+          "provider_id": {
+            "type": "string",
+            "title": "Provider Id"
+          },
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "rounds": {
+            "type": "integer",
+            "title": "Rounds"
+          },
+          "deadline_seconds": {
+            "type": "integer",
+            "title": "Deadline Seconds"
+          },
+          "history": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "History"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "requester_id",
+          "provider_id",
+          "skill",
+          "amount",
+          "status",
+          "rounds",
+          "deadline_seconds",
+          "history",
+          "created_at"
+        ],
+        "title": "OfferOut"
+      },
+      "RateRequest": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "rating": {
+            "type": "number",
+            "maximum": 5.0,
+            "minimum": 0.0,
+            "title": "Rating"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Id"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "rating"
+        ],
+        "title": "RateRequest"
+      },
+      "ReassignRequest": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "default": "manual"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id"
+        ],
+        "title": "ReassignRequest"
+      },
+      "ReputationOut": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "reputation": {
+            "type": "number",
+            "title": "Reputation"
+          },
+          "successful_jobs": {
+            "type": "integer",
+            "title": "Successful Jobs"
+          },
+          "failed_jobs": {
+            "type": "integer",
+            "title": "Failed Jobs"
+          },
+          "total_ratings": {
+            "type": "integer",
+            "title": "Total Ratings"
+          },
+          "avg_rating": {
+            "type": "number",
+            "title": "Avg Rating"
+          },
+          "trust_tier": {
+            "type": "string",
+            "title": "Trust Tier"
+          },
+          "history": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "History"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "reputation",
+          "successful_jobs",
+          "failed_jobs",
+          "total_ratings",
+          "avg_rating",
+          "trust_tier",
+          "history"
+        ],
+        "title": "ReputationOut"
+      },
+      "SkillMDRequest": {
+        "properties": {
+          "agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "endpoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Endpoint"
+          }
+        },
+        "type": "object",
+        "title": "SkillMDRequest"
+      },
+      "SkillMDResponse": {
+        "properties": {
+          "skillmd": {
+            "type": "string",
+            "title": "Skillmd"
+          },
+          "json_manifest": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Json Manifest"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skillmd",
+          "json_manifest"
+        ],
+        "title": "SkillMDResponse"
+      },
+      "TaskAction": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id"
+        ],
+        "title": "TaskAction"
+      },
+      "TaskAssign": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          },
+          "assignee_id": {
+            "type": "string",
+            "title": "Assignee Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id",
+          "assignee_id"
+        ],
+        "title": "TaskAssign"
+      },
+      "TaskCreate": {
+        "properties": {
+          "requester_id": {
+            "type": "string",
+            "title": "Requester Id"
+          },
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "spec": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Spec"
+          },
+          "acceptance_criteria": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Acceptance Criteria"
+          },
+          "contract_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contract Id"
+          },
+          "deadline_seconds": {
+            "type": "integer",
+            "title": "Deadline Seconds",
+            "default": 120
+          }
+        },
+        "type": "object",
+        "required": [
+          "requester_id",
+          "skill"
+        ],
+        "title": "TaskCreate"
+      },
+      "TaskOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "contract_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contract Id"
+          },
+          "requester_id": {
+            "type": "string",
+            "title": "Requester Id"
+          },
+          "assignee_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee Id"
+          },
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "spec": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Spec"
+          },
+          "acceptance_criteria": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Acceptance Criteria"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "attempts": {
+            "type": "integer",
+            "title": "Attempts"
+          },
+          "deadline_seconds": {
+            "type": "integer",
+            "title": "Deadline Seconds"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "contract_id",
+          "requester_id",
+          "assignee_id",
+          "skill",
+          "spec",
+          "acceptance_criteria",
+          "result",
+          "status",
+          "attempts",
+          "deadline_seconds",
+          "created_at"
+        ],
+        "title": "TaskOut"
+      },
+      "TaskSubmit": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          },
+          "result": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id",
+          "result"
+        ],
+        "title": "TaskSubmit"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VerificationOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          },
+          "verdict": {
+            "type": "string",
+            "title": "Verdict"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          },
+          "checks": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Checks"
+          },
+          "notes": {
+            "type": "string",
+            "title": "Notes"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "task_id",
+          "verdict",
+          "score",
+          "checks",
+          "notes",
+          "created_at"
+        ],
+        "title": "VerificationOut"
+      },
+      "VerifyRequest": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id"
+        ],
+        "title": "VerifyRequest"
+      }
+    }
+  }
+}

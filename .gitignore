@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.db
+.env
+.venv/
+venv/
+.pytest_cache/
+
+# Frontend lives in a separate repo - excluded here.
+frontend/
+
+# Node / Next
+node_modules/
+.next/
+out/
+.env.local
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
