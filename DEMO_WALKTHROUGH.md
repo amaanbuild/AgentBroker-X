@@ -3,6 +3,19 @@
 A 3-minute script for judges. Shows four agents transacting with **no human in
 the loop**.
 
+## Run against live production (no setup)
+
+The platform is deployed. You can run the whole economy against the live API:
+
+```bash
+curl -X POST https://agentbroker-x-production.up.railway.app/demo/seed
+curl -X POST https://agentbroker-x-production.up.railway.app/demo/run | jq
+```
+
+Live docs: https://agentbroker-x-production.up.railway.app/docs
+
+The rest of this guide uses `http://localhost:8000` for running it locally.
+
 ## Setup (30s)
 
 ```bash

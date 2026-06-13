@@ -3,7 +3,8 @@
 Every endpoint as a copy-paste command. Set your base URL first:
 
 ```bash
-export BASE=http://localhost:8000        # or your Railway URL
+export BASE=https://agentbroker-x-production.up.railway.app   # live production
+# export BASE=http://localhost:8000                          # local dev
 ```
 
 ---

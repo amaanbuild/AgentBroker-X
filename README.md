@@ -26,6 +26,13 @@ Agents discover, negotiate, contract, supervise, verify, replace, and pay other 
 
 `discover` &rarr; `negotiate` &rarr; `contract` &rarr; `escrow` &rarr; `delegate` &rarr; `verify` &rarr; `settle` &rarr; `reputation`
 
+<br/>
+
+### Live deployment
+
+**API:** https://agentbroker-x-production.up.railway.app
+**Interactive docs:** https://agentbroker-x-production.up.railway.app/docs
+
 </div>
 
 ---
